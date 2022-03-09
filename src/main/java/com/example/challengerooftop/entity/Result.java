@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "result")
+@Table(name = "results")
 public class Result {
 
     @Id
@@ -16,7 +16,12 @@ public class Result {
     private String searchWord;
 
     @NonNull
-    private String searchCount;
+    private Integer matchCount;
+
+    public Result(@NonNull String searchWord, @NonNull Integer matchCount) {
+        this.searchWord = searchWord;
+        this.matchCount = matchCount;
+    }
 
     public int getId() {
         return id;
@@ -30,15 +35,15 @@ public class Result {
         return searchWord;
     }
 
-    public void setSearchWord(String searchWord) {
+    public void setSearchWord(String matchCount) {
         this.searchWord = searchWord;
     }
 
-    public String getSearchCount() {
-        return searchCount;
+    public Integer getMatchCount() {
+        return matchCount;
     }
 
-    public void setSearchCount(String searchCount) {
-        this.searchCount = searchCount;
+    public void setMatchCount(Integer matchCount) {
+        this.matchCount = matchCount;
     }
 }

@@ -21,8 +21,8 @@ public class Text {
     @NonNull
     private int chars;
 
-    /*@ManyToOne
-    private List<Result> results = new ArrayList<>();*/
+    @OneToMany
+    private List<Result> results = new ArrayList<>();
 
     private boolean deleted = false;
 
@@ -50,13 +50,13 @@ public class Text {
         this.chars = chars;
     }
 
-    /*public List<Result> getResults() {
+    public List<Result> getResults() {
         return results;
     }
 
     public void setResults(List<Result> results) {
         this.results = results;
-    }*/
+    }
 
     public boolean isDeleted() {
         return deleted;
