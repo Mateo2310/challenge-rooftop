@@ -2,14 +2,12 @@ package com.example.challengerooftop.service;
 
 import com.example.challengerooftop.entity.Text;
 import com.example.challengerooftop.model.TextDto;
+import com.example.challengerooftop.model.TextResponseDto;
 
-import java.util.List;
 import java.util.Map;
 
-public interface ITextService {
-    Map<String, Object> createText(TextDto text);
-    void deleteText(String id);
-    Text findById(String id);
-    List<Text> findText();
+public interface ITextService extends IDefaultService<Text> {
+    Map<String, Object> analyzerText(TextDto dto);
     Map<String, Object> findByHash(String hash);
+    TextResponseDto findById(Integer id);
 }

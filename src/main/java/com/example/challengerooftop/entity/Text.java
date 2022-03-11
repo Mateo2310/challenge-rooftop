@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "text")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Text {
 
     @Id

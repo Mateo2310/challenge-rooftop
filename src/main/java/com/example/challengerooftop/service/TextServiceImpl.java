@@ -3,7 +3,7 @@ package com.example.challengerooftop.service;
 import com.example.challengerooftop.entity.Result;
 import com.example.challengerooftop.entity.Text;
 import com.example.challengerooftop.model.TextDto;
-import com.example.challengerooftop.repository.IResultDao;
+import com.example.challengerooftop.model.TextResponseDto;
 import com.example.challengerooftop.repository.ITextDao;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +14,18 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Service
-public class TextServiceImpl implements ITextService{
+public class TextServiceImpl implements ITextService {
 
     ITextDao textDao;
-    IResultDao resultDao;
+    IResultService resultService;
 
-    public TextServiceImpl(ITextDao textDao, IResultDao resultDao) {
+    public TextServiceImpl(ITextDao textDao, IResultService resultService) {
         this.textDao = textDao;
-        this.resultDao = resultDao;
+        this.resultService = resultService;
     }
 
     @Override
-    public Map<String, Object> createText(TextDto textDto) {
+    public Map<String, Object> analyzerText(TextDto textDto) {
         String hashWord = textDto.getSearchWord()+textDto.getChars();
         Map<String, Object> textResponse = findByHash(hashWord);
         if (Objects.nonNull(textResponse) && !textResponse.isEmpty()){
@@ -35,8 +35,8 @@ public class TextServiceImpl implements ITextService{
         Text text = new Text();
         text.setChars(textDto.getChars());
         text.setHash(toHashMD5(hashWord));
-        text.setResults(mapToResult(textResult));
-        textDao.createText(text);
+        text.setResults(resultService.mapToResult(textResult));
+        textDao.createEntity(text);
         textResponse = new HashMap<>();
         textResponse.put("id", text.getId());
         textResponse.put("url", "/text/"+text.getId());
@@ -44,17 +44,24 @@ public class TextServiceImpl implements ITextService{
     }
 
     @Override
-    public void deleteText(String id) {
+    public Text createEntity(Text text) {
+        return textDao.createEntity(text);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
 
     }
 
     @Override
-    public Text findById(String id) {
-        return null;
+    public TextResponseDto findById(Integer id) {
+        Text textEntity = textDao.findById(id);
+
+        return (textEntity!=null)?mapperToTextDto(textEntity):null;
     }
 
     @Override
-    public List<Text> findText() {
+    public List<Text> findAll() {
         return null;
     }
 
@@ -101,12 +108,6 @@ public class TextServiceImpl implements ITextService{
         return results;
     }
 
-    public List<Result> mapToResult(Map<String, Integer> results){
-        List<Result> resultList = new ArrayList<>();
-        results.forEach((k, v)-> resultList.add(resultDao.createResult(new Result(k, v))));
-        return resultList;
-    }
-
     public String toHashMD5(String element){
         String hash = "";
         try {
@@ -121,5 +122,17 @@ public class TextServiceImpl implements ITextService{
         return hash;
     }
 
+    public TextResponseDto mapperToTextDto(Text entity){
+        TextResponseDto textDto = new TextResponseDto();
+        textDto.setHash(entity.getHash());
+        textDto.setChars(entity.getChars());
+        Map<String, Integer> results = new HashMap<>();
+        entity.getResults().forEach(result ->
+          results.put(result.getSearchWord(), result.getMatchCount())
+        );
+        textDto.setResults(results);
+
+        return textDto;
+    }
 
 }
