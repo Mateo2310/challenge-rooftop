@@ -1,6 +1,7 @@
 package com.example.challengerooftop.service;
 
 import com.example.challengerooftop.entity.Result;
+import com.example.challengerooftop.execption.NotFound;
 import com.example.challengerooftop.repository.IResultDao;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class ResultServiceImpl implements IResultService{
 
     @Override
     public Result createEntity(Result entity) {
-        resultDao.createEntity(entity);
+        resultDao.save(entity);
         return entity;
     }
 
@@ -30,13 +31,14 @@ public class ResultServiceImpl implements IResultService{
 
     @Override
     public Result findById(Integer id) {
-        return resultDao.findById(id);
+        return resultDao.findById(id).orElseThrow(() -> new NotFound("Id "+id+" not found"));
     }
 
     @Override
     public List<Result> mapToResult(Map<String, Integer> results) {
         List<Result> resultList = new ArrayList<>();
-        results.forEach((k, v)-> resultList.add(resultDao.createEntity(new Result(k, v))));
+        results.forEach((k, v)-> resultList.add(new Result(k, v)));
+        resultDao.saveAll(resultList);
         return resultList;
     }
 

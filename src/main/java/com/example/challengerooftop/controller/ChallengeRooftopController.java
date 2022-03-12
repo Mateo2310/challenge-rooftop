@@ -19,7 +19,7 @@ public class ChallengeRooftopController {
 
     @PostMapping(value = "/")
     public ResponseEntity<?> createText(@RequestBody TextDto textDto){
-
+        System.out.println("INICIANDO PROCESO CON: "+textDto.getSearchWord());
         return ResponseEntity.ok(iTextService.analyzerText(textDto));
     }
 

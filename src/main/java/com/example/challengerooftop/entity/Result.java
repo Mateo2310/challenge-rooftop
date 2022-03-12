@@ -1,7 +1,5 @@
 package com.example.challengerooftop.entity;
 
-import org.springframework.lang.NonNull;
-
 import javax.persistence.*;
 
 @Entity
@@ -12,15 +10,19 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @NonNull
     private String searchWord;
 
-    @NonNull
     private Integer matchCount;
 
-    public Result(@NonNull String searchWord, @NonNull Integer matchCount) {
+    private Integer position;
+
+    public Result(String searchWord, Integer matchCount) {
         this.searchWord = searchWord;
         this.matchCount = matchCount;
+    }
+
+    public Result() {
+
     }
 
     public int getId() {
@@ -45,5 +47,13 @@ public class Result {
 
     public void setMatchCount(Integer matchCount) {
         this.matchCount = matchCount;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

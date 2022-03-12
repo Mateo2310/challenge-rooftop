@@ -2,6 +2,8 @@ package com.example.challengerooftop.service;
 
 import com.example.challengerooftop.entity.Result;
 import com.example.challengerooftop.entity.Text;
+import com.example.challengerooftop.execption.NotFound;
+import com.example.challengerooftop.model.ResultDto;
 import com.example.challengerooftop.model.TextDto;
 import com.example.challengerooftop.model.TextResponseDto;
 import com.example.challengerooftop.repository.ITextDao;
@@ -26,17 +28,20 @@ public class TextServiceImpl implements ITextService {
 
     @Override
     public Map<String, Object> analyzerText(TextDto textDto) {
+        System.out.println("ANALIZANDO TEXTO");
         String hashWord = textDto.getSearchWord()+textDto.getChars();
         Map<String, Object> textResponse = findByHash(hashWord);
-        if (Objects.nonNull(textResponse) && !textResponse.isEmpty()){
+        if (Objects.nonNull(textResponse.get("id"))){
             return textResponse;
         }
         Map<String, Integer> textResult = analyzeText(textDto);
         Text text = new Text();
         text.setChars(textDto.getChars());
         text.setHash(toHashMD5(hashWord));
+        System.out.println("HASH: "+text.getHash());
         text.setResults(resultService.mapToResult(textResult));
-        textDao.createEntity(text);
+        System.out.println("EL MAPEADO DE RESULTS ES EXITOSO");
+        textDao.save(text);
         textResponse = new HashMap<>();
         textResponse.put("id", text.getId());
         textResponse.put("url", "/text/"+text.getId());
@@ -45,7 +50,7 @@ public class TextServiceImpl implements ITextService {
 
     @Override
     public Text createEntity(Text text) {
-        return textDao.createEntity(text);
+        return textDao.save(text);
     }
 
     @Override
@@ -55,9 +60,8 @@ public class TextServiceImpl implements ITextService {
 
     @Override
     public TextResponseDto findById(Integer id) {
-        Text textEntity = textDao.findById(id);
-
-        return (textEntity!=null)?mapperToTextDto(textEntity):null;
+        Text text = textDao.findById(id).orElseThrow(()-> new NotFound("ID "+id+" not found"));
+        return mapperToTextDto(text);
     }
 
     @Override
@@ -93,11 +97,10 @@ public class TextServiceImpl implements ITextService {
 
     public Map<String, Integer> searchWordInText(List<String> separateWords){
         Map<String, Integer> results = new HashMap<>();
+        ResultDto resultDto = new ResultDto();
         for (String key:separateWords) {
-            System.out.println("key: "+key);
             int count = 0;
             for (String key2:separateWords){
-                System.out.println("key2: "+key2);
                 if (key.equals(key2)){
                     count++;
                 }
@@ -124,6 +127,7 @@ public class TextServiceImpl implements ITextService {
 
     public TextResponseDto mapperToTextDto(Text entity){
         TextResponseDto textDto = new TextResponseDto();
+        textDto.setId(entity.getId());
         textDto.setHash(entity.getHash());
         textDto.setChars(entity.getChars());
         Map<String, Integer> results = new HashMap<>();
