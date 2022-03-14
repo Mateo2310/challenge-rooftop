@@ -1,13 +1,13 @@
 package com.example.challengerooftop.service;
 
 import com.example.challengerooftop.entity.Result;
-import com.example.challengerooftop.execption.NotFound;
+import com.example.challengerooftop.exception.NotFoundTextException;
+import com.example.challengerooftop.model.ResultCriteria;
 import com.example.challengerooftop.repository.IResultDao;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ResultServiceImpl implements IResultService{
@@ -25,25 +25,21 @@ public class ResultServiceImpl implements IResultService{
     }
 
     @Override
-    public void deleteEntity(String id) {
+    public void deleteEntity(Integer id) {
 
     }
 
     @Override
     public Result findById(Integer id) {
-        return resultDao.findById(id).orElseThrow(() -> new NotFound("Id "+id+" not found"));
+        return resultDao.findById(id).orElseThrow(() -> new NotFoundTextException("Id "+id+" not found"));
     }
 
     @Override
-    public List<Result> mapToResult(Map<String, Integer> results) {
+    public List<Result> mapToResult(List<ResultCriteria> results) {
         List<Result> resultList = new ArrayList<>();
-        results.forEach((k, v)-> resultList.add(new Result(k, v)));
+        results.forEach((result)-> resultList.add(
+                new Result(result.getSearchWord(), result.getMatchCount(), result.getPosition())));
         resultDao.saveAll(resultList);
         return resultList;
-    }
-
-    @Override
-    public List<Result> findAll() {
-        return null;
     }
 }

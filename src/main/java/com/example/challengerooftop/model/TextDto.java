@@ -1,18 +1,29 @@
 package com.example.challengerooftop.model;
 
-import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class TextDto implements Serializable {
+public class TextDto {
 
-    private String searchWord;
-    private Integer chars = 2;
+    private Integer id;
+    private String hash;
+    private Integer chars;
+    private Map<String, Object> results = new LinkedHashMap<>();
 
-    public String getSearchWord() {
-        return searchWord;
+    public Integer getId() {
+        return id;
     }
 
-    public void setSearchWord(String searchWord) {
-        this.searchWord = searchWord;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public Integer getChars() {
@@ -21,5 +32,13 @@ public class TextDto implements Serializable {
 
     public void setChars(Integer chars) {
         this.chars = chars;
+    }
+
+    public Map<String, Object> getResults() {
+        return results;
+    }
+
+    public void setResults(Map<String, Object> results) {
+        this.results = results;
     }
 }

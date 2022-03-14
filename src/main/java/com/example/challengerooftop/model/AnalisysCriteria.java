@@ -1,6 +1,7 @@
 package com.example.challengerooftop.model;
 
 public class AnalisysCriteria extends PageCriteria{
+
     private int chars = 2;
 
     public AnalisysCriteria(int chars) {

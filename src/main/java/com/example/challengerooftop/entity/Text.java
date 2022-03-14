@@ -3,7 +3,7 @@ package com.example.challengerooftop.entity;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -21,7 +21,7 @@ public class Text {
     private int chars;
 
     @OneToMany
-    private List<Result> results = new ArrayList<>();
+    private List<Result> results = new LinkedList<>();
 
     private boolean deleted = false;
 

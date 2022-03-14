@@ -16,9 +16,10 @@ public class Result {
 
     private Integer position;
 
-    public Result(String searchWord, Integer matchCount) {
+    public Result(String searchWord, Integer matchCount, Integer position) {
         this.searchWord = searchWord;
         this.matchCount = matchCount;
+        this.position = position;
     }
 
     public Result() {
