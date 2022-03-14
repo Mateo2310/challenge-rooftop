@@ -1,2 +1,2 @@
 # challenge-rooftop
-El proyecto está construido con Spring Boot y Java 11.
+El proyecto está construido con Spring Boot, Java 11 y con base de datos H2.
