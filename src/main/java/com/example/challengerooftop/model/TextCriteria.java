@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 public class TextCriteria implements Serializable {
 
-    private String searchWord;
+    private String text;
     private Integer chars = 2;
 
-    public String getSearchWord() {
-        return searchWord;
+    public String getText() {
+        return text;
     }
 
-    public void setSearchWord(String searchWord) {
-        this.searchWord = searchWord;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Integer getChars() {

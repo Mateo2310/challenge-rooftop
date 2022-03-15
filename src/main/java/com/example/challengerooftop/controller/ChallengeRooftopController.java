@@ -20,7 +20,7 @@ public class ChallengeRooftopController {
 
     @PostMapping(value = "/")
     public ResponseEntity<?> createText(@RequestBody TextCriteria textCriteria){
-        System.out.println("INICIANDO PROCESO CON: "+ textCriteria.getSearchWord());
+        textCriteria.setChars((textCriteria.getChars() < 2) ? 2 : textCriteria.getChars());
         return ResponseEntity.ok(iTextService.analyzerText(textCriteria));
     }
 
@@ -30,7 +30,7 @@ public class ChallengeRooftopController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getPaginator(@RequestBody AnalisysCriteria criteria){
+    public ResponseEntity<?> getPaginator(AnalisysCriteria criteria){
         return ResponseEntity.ok(iTextService.findAllPaginator(criteria));
     }
 
@@ -38,8 +38,6 @@ public class ChallengeRooftopController {
     public ResponseEntity<?> deleteText(@PathVariable(value = "id") Integer id){
         iTextService.deleteEntity(id);
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Id "+id+" deleted successfully!");
-        response.put("statusCode", 200);
         return ResponseEntity.ok(response);
     }
 }

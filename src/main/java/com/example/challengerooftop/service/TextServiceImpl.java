@@ -30,14 +30,14 @@ public class TextServiceImpl implements ITextService {
 
     @Override
     public Map<String, Object> analyzerText(TextCriteria textCriteria) {
-        String hashWord = textCriteria.getSearchWord()+ textCriteria.getChars();
+        String hashWord = textCriteria.getText()+textCriteria.getChars();
         Map<String, Object> textResponse = findByHash(toHashMD5(hashWord));
-        if (Objects.nonNull(textResponse.get("id"))){
+        if (textResponse != null){
             return textResponse;
         }
         int chars = textCriteria.getChars();
-        if (chars > textCriteria.getSearchWord().length()){
-            textCriteria.setChars(textCriteria.getSearchWord().length());
+        if (chars > textCriteria.getText().length()){
+            textCriteria.setChars(textCriteria.getText().length());
         }
         List<ResultCriteria> textResult = separedText(textCriteria);
         Text text = new Text();
@@ -58,40 +58,42 @@ public class TextServiceImpl implements ITextService {
 
     @Override
     public void deleteEntity(Integer id) {
-        Text textDelete = textDao.findById(id).orElseThrow(()-> new NotFoundTextException("Id "+id+" not found"));
+        Text textDelete = textDao.findById(id).orElseThrow(()-> new NotFoundTextException("Text not found"));
         textDelete.setDeleted(true);
         textDao.save(textDelete);
     }
 
     @Override
     public TextDto findById(Integer id) {
-        Text text = textDao.findById(id).orElseThrow(()-> new NotFoundTextException("ID "+id+" not found"));
+        Text text = textDao.findById(id).orElseThrow(()-> new NotFoundTextException("Text not found"));
         return mapperToTextDto(text);
     }
 
     @Override
-    public PaginatorTextDto findAllPaginator(AnalisysCriteria criteria) {
+    public List<TextDto> findAllPaginator(AnalisysCriteria criteria) {
         normalizeAnalisysCriteria(criteria);
         Pageable pageable = PageRequest.of(criteria.getPage(), criteria.getRpp());
         Page<Text> pageEntity = textDao.findAllByChars(pageable, criteria.getChars());
-        return Optional.ofNullable(mapToPaginatorDto(pageEntity))
-                .orElseThrow(() -> new NotFoundTextException("Not found"));
+        return mapToPaginatorDto(pageEntity);
     }
 
 
     private Map<String, Object> findByHash(String hash) {
         Map<String, Object> response = new HashMap<>();
         Integer id = textDao.findByHash(hash);
+        if (id == null){
+            return null;
+        }
         response.put("id", id);
         response.put("url", "/text/"+id);
         return response;
     }
 
     private List<ResultCriteria> separedText(TextCriteria textCriteria) {
-        textCriteria.setSearchWord(textCriteria.getSearchWord().toLowerCase());
+        textCriteria.setText(textCriteria.getText().toLowerCase());
         List<String> result = new ArrayList<>();
         int end = textCriteria.getChars();
-        String text = textCriteria.getSearchWord();
+        String text = textCriteria.getText();
         char[] charsArray = text.toLowerCase(Locale.ROOT).toCharArray();
         for (int i = 0; i < charsArray.length; i++) {
             if (end <= charsArray.length){
@@ -105,7 +107,6 @@ public class TextServiceImpl implements ITextService {
     }
 
     private List<ResultCriteria> searchWordInText(List<String> separateWords){
-        Map<String, Integer> results = new HashMap<>();
         ResultCriteria result;
         List<ResultCriteria> listResult = new ArrayList<>();
         int position = 0;
@@ -120,7 +121,6 @@ public class TextServiceImpl implements ITextService {
             result.setSearchWord(key);
             result.setMatchCount(count);
             result.setPosition(position);
-            results.put(key, count);
             position++;
             listResult.add(result);
         }
@@ -172,20 +172,14 @@ public class TextServiceImpl implements ITextService {
         return response;
     }
 
-    private PaginatorTextDto mapToPaginatorDto(Page<Text> pageEntity){
-        PaginatorTextDto pageDto = new PaginatorTextDto();
+    private List<TextDto> mapToPaginatorDto(Page<Text> pageEntity){
+        List<TextDto> pageDtoList = new ArrayList<>();
         if (pageEntity.getContent().isEmpty()){
-            return null;
+            return pageDtoList;
         }
-        pageDto.setTotalPages(pageEntity.getTotalPages());
-        pageDto.setTotalElements(pageEntity.getTotalElements());
-        pageDto.setSizePage(pageEntity.getSize());
-        List<TextDto> textDtoList = pageEntity.getContent().stream()
+        return pageEntity.getContent().stream()
                 .map(this::mapperToTextDto)
                 .collect(Collectors.toList());
-        pageDto.setListTextDto(textDtoList);
-
-        return pageDto;
     }
 
     private void normalizeAnalisysCriteria(AnalisysCriteria criteria){
