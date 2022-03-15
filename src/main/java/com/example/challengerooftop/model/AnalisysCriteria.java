@@ -4,9 +4,8 @@ public class AnalisysCriteria extends PageCriteria{
 
     private int chars = 2;
 
-    public AnalisysCriteria(int chars) {
+    public AnalisysCriteria() {
         super();
-        this.chars = chars;
     }
 
     public int getChars() {

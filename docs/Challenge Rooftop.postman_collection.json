@@ -1,0 +1,77 @@
+{
+	"info": {
+		"_postman_id": "ea612165-c420-4d41-a07a-d8982c6a8738",
+		"name": "Challenge Rooftop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create text",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchWord\":\"hola como estasAS\",\r\n    \"chars\":3234\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/text/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"text",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Text",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/text/2"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All with chars",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/text"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Text",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "localhost:8080/text/31"
+			},
+			"response": []
+		}
+	]
+}

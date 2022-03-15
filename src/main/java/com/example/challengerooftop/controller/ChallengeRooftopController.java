@@ -30,7 +30,7 @@ public class ChallengeRooftopController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getPaginator(AnalisysCriteria criteria){
+    public ResponseEntity<?> getPaginator(@RequestBody AnalisysCriteria criteria){
         return ResponseEntity.ok(iTextService.findAllPaginator(criteria));
     }
 
